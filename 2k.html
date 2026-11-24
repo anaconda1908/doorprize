@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>LuckyScan - Doorprize Rp 2.000</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-gradient-start: #f0fdf4;
+      --bg-gradient-end: #fefce8;
+      --card-bg: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --gold-primary: #f59e0b;
+      --gold-dark: #b45309;
+      --gold-light: #fef3c7;
+      --emerald-primary: #10b981;
+      --emerald-dark: #047857;
+      --emerald-light: #d1fae5;
+      --border-subtle: #e2e8f0;
+      --shadow-card: 0 20px 45px -15px rgba(15, 23, 42, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(145deg, var(--bg-gradient-start) 0%, #ffffff 50%, var(--bg-gradient-end) 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.55;
+    }
+
+    .bg-orb-1 {
+      width: 320px;
+      height: 320px;
+      background: #fde68a;
+      top: -80px;
+      right: -80px;
+    }
+
+    .bg-orb-2 {
+      width: 300px;
+      height: 300px;
+      background: #a7f3d0;
+      bottom: -80px;
+      left: -80px;
+    }
+
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 440px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .brand-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, var(--emerald-primary), var(--emerald-dark));
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.28);
+    }
+
+    .brand-name {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+
+    .brand-name span {
+      color: var(--emerald-dark);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 28px;
+      box-shadow: var(--shadow-card);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .card-top-banner {
+      background: linear-gradient(135deg, #065f46 0%, #047857 50%, #059669 100%);
+      color: #ffffff;
+      padding: 16px 24px;
+      text-align: center;
+      position: relative;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .card-body {
+      padding: 32px 24px 36px;
+      text-align: center;
+    }
+
+    /* Tahap 1: Kotak Kado Interaktif */
+    .stage-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 0 6px;
+    }
+
+    .gift-trigger {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 12px;
+      margin: 12px 0 18px;
+      position: relative;
+      outline: none;
+    }
+
+    .gift-glow {
+      position: absolute;
+      inset: 6px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.35) 0%, rgba(245, 158, 11, 0) 70%);
+      border-radius: 50%;
+      animation: pulseGlow 2s infinite ease-in-out;
+    }
+
+    .gift-icon-wrap {
+      width: 124px;
+      height: 124px;
+      border-radius: 30px;
+      background: linear-gradient(145deg, #fffbeb, #fef3c7);
+      border: 2px solid #fde68a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 14px 30px rgba(245, 158, 11, 0.22);
+      animation: floatGift 2.6s infinite ease-in-out;
+      transition: transform 0.2s ease;
+    }
+
+    .gift-trigger:hover .gift-icon-wrap {
+      transform: scale(1.05);
+    }
+
+    .gift-trigger:active .gift-icon-wrap {
+      transform: scale(0.95);
+    }
+
+    .gift-emoji {
+      font-size: 4.2rem;
+      line-height: 1;
+      user-select: none;
+    }
+
+    .tap-title {
+      font-size: 1.38rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .tap-subtitle {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      max-width: 300px;
+      margin: 0 auto 22px;
+    }
+
+    .btn-open {
+      width: 100%;
+      padding: 15px 24px;
+      border: none;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(217, 119, 6, 0.3);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .btn-open:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(217, 119, 6, 0.36);
+    }
+
+    .btn-open:active {
+      transform: translateY(0);
+    }
+
+    /* Tahap 2: Hasil Nominal Hadiah */
+    .stage-prize {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      animation: revealPop 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .stage-prize.active {
+      display: flex;
+    }
+
+    .congrats-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--emerald-light);
+      color: var(--emerald-dark);
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+
+    .prize-headline {
+      font-size: 1.32rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
+    }
+
+    .prize-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 22px;
+    }
+
+    .prize-amount-box {
+      width: 100%;
+      background: linear-gradient(145deg, #fffbeb 0%, #fef3c7 100%);
+      border: 2px solid #f59e0b;
+      border-radius: 22px;
+      padding: 26px 18px;
+      position: relative;
+      box-shadow: 0 12px 28px rgba(245, 158, 11, 0.16);
+    }
+
+    .prize-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold-dark);
+      margin-bottom: 8px;
+    }
+
+    .prize-value {
+      font-size: 2.55rem;
+      font-weight: 800;
+      color: #92400e;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .prize-subnote {
+      margin-top: 10px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #b45309;
+    }
+
+    .btn-reset {
+      margin-top: 20px;
+      padding: 10px 18px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      background: #f8fafc;
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-reset:hover {
+      background: #f1f5f9;
+      color: var(--text-primary);
+      border-color: #cbd5e1;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 0.78rem;
+      color: #64748b;
+    }
+
+    @keyframes floatGift {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      25% { transform: translateY(-6px) rotate(-2deg); }
+      75% { transform: translateY(-6px) rotate(2deg); }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(0.95); opacity: 0.55; }
+      50% { transform: scale(1.12); opacity: 0.95; }
+    }
+
+    @keyframes revealPop {
+      0% { opacity: 0; transform: scale(0.88) translateY(12px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    @media (max-width: 380px) {
+      .prize-value {
+        font-size: 2.15rem;
+      }
+      .card-body {
+        padding: 26px 18px 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <canvas id="confetti-canvas"></canvas>
+
+  <main class="container">
+    <header class="brand-header">
+      <div class="brand-logo" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+          <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+          <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+          <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+          <rect x="7" y="7" width="10" height="10" rx="2" />
+        </svg>
+      </div>
+      <div class="brand-name">Lucky<span>Scan</span></div>
+    </header>
+
+    <section class="card">
+      <div class="card-top-banner">
+        <span class="badge-pill">✨ Hadiah Doorprize Spesial</span>
+      </div>
+
+      <div class="card-body">
+        <!-- Tampilan Awal Sebelum Dibuka -->
+        <div id="stage-box" class="stage-box">
+          <button type="button" id="gift-trigger" class="gift-trigger" aria-label="Buka Kotak Hadiah">
+            <span class="gift-glow"></span>
+            <div class="gift-icon-wrap">
+              <span class="gift-emoji">🎁</span>
+            </div>
+          </button>
+
+          <h1 class="tap-title">Kejutan Untukmu!</h1>
+          <p class="tap-subtitle">Ketuk kotak kado di atas untuk membuka dan melihat nominal hadiah doorprize kamu.</p>
+
+          <button type="button" id="btn-open" class="btn-open">Buka Hadiah Sekarang</button>
+        </div>
+
+        <!-- Tampilan Nominal Hadiah -->
+        <div id="stage-prize" class="stage-prize" aria-live="polite">
+          <div class="congrats-tag">🎉 Selamat, Kamu Beruntung!</div>
+          <h2 class="prize-headline">Kamu Mendapatkan Hadiah</h2>
+          <p class="prize-desc">Tunjukkan layar ini kepada panitia di lokasi acara.</p>
+
+          <div class="prize-amount-box">
+            <div class="prize-label">Nominal Hadiah Doorprize</div>
+            <div class="prize-value">Rp 2.000</div>
+            <div class="prize-subnote">Dua Ribu Rupiah</div>
+          </div>
+
+          <button type="button" id="btn-reset" class="btn-reset">↻ Ulangi / Test Lagi</button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer-note">
+      Powered by <strong>LuckyScan</strong>
+    </footer>
+  </main>
+
+  <script>
+    const stageBox = document.getElementById('stage-box');
+    const stagePrize = document.getElementById('stage-prize');
+    const giftTrigger = document.getElementById('gift-trigger');
+    const btnOpen = document.getElementById('btn-open');
+    const btnReset = document.getElementById('btn-reset');
+
+    try { localStorage.clear(); } catch (e) {}
+
+    function openPrize() {
+      stageBox.style.display = 'none';
+      stagePrize.classList.add('active');
+      launchConfetti();
+    }
+
+    function resetPrize() {
+      stagePrize.classList.remove('active');
+      stageBox.style.display = 'flex';
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    giftTrigger.addEventListener('click', openPrize);
+    btnOpen.addEventListener('click', openPrize);
+    btnReset.addEventListener('click', resetPrize);
+
+    // Efek Konfeti Ringan
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let animationId = null;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function launchConfetti() {
+      const colors = ['#f59e0b', '#10b981', '#3b82f6', '#ef4444', '#fbbf24', '#34d399'];
+      particles = [];
+
+      for (let i = 0; i < 95; i++) {
+        particles.push({
+          x: canvas.width / 2 + (Math.random() - 0.5) * 140,
+          y: canvas.height * 0.42,
+          vx: (Math.random() - 0.5) * 14,
+          vy: (Math.random() - 0.85) * 15,
+          size: Math.random() * 7 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          vRot: (Math.random() - 0.5) * 12,
+          alpha: 1
+        });
+      }
+
+      if (animationId) cancelAnimationFrame(animationId);
+      animateConfetti();
+    }
+
+    function animateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let activeCount = 0;
+
+      for (const p of particles) {
+        if (p.alpha <= 0) continue;
+        activeCount++;
+
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.38;
+        p.vx *= 0.985;
+        p.rotation += p.vRot;
+
+        if (p.y > canvas.height * 0.82) {
+          p.alpha -= 0.025;
+        }
+
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+        ctx.restore();
+      }
+
+      if (activeCount > 0) {
+        animationId = requestAnimationFrame(animateConfetti);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+  </script>
+</body>
+</html>
