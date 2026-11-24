@@ -1,580 +1,504 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LuckyScan — Hadiah Spesial Rp 100.000</title>
-    <!-- Tailwind CSS untuk tata letak responsif mobile-first -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Canvas Confetti untuk efek perayaan saat kado dibuka -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <!-- Google Fonts: Plus Jakarta Sans & Space Grotesk -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LuckyScan - Doorprize Rp 100.000</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-gradient-start: #f0fdf4;
+      --bg-gradient-end: #fefce8;
+      --card-bg: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --gold-primary: #f59e0b;
+      --gold-dark: #b45309;
+      --gold-light: #fef3c7;
+      --emerald-primary: #10b981;
+      --emerald-dark: #047857;
+      --emerald-light: #d1fae5;
+      --border-subtle: #e2e8f0;
+      --shadow-card: 0 20px 45px -15px rgba(15, 23, 42, 0.12);
+    }
 
-    <style>
-        :root {
-            --bg-start: #FFFDF9;
-            --bg-end: #FFF4E6;
-            --accent-gold: #F59E0B;
-            --accent-emerald: #059669;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: linear-gradient(155deg, var(--bg-start) 0%, #FFF9EE 50%, var(--bg-end) 100%);
-            min-height: 100vh;
-            overflow-x: hidden;
-            color: #0F172A;
-        }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(145deg, var(--bg-gradient-start) 0%, #ffffff 50%, var(--bg-gradient-end) 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
 
-        .font-display {
-            font-family: 'Space Grotesk', sans-serif;
-        }
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.55;
+    }
 
-        /* Animasi melayang dan berdenyut lembut pada kotak kado */
-        @keyframes giftPulseFloat {
-            0%, 100% {
-                transform: translateY(0px) scale(1);
-            }
-            50% {
-                transform: translateY(-10px) scale(1.03);
-            }
-        }
+    .bg-orb-1 {
+      width: 320px;
+      height: 320px;
+      background: #fde68a;
+      top: -80px;
+      right: -80px;
+    }
 
-        /* Animasi getar cepat sebelum kado terbuka */
-        @keyframes giftShake {
-            0%, 100% { transform: rotate(0deg) scale(1); }
-            15% { transform: rotate(-9deg) scale(1.07); }
-            30% { transform: rotate(9deg) scale(1.07); }
-            45% { transform: rotate(-9deg) scale(1.09); }
-            60% { transform: rotate(9deg) scale(1.09); }
-            75% { transform: rotate(-5deg) scale(1.05); }
-            90% { transform: rotate(5deg) scale(1.05); }
-        }
+    .bg-orb-2 {
+      width: 300px;
+      height: 300px;
+      background: #a7f3d0;
+      bottom: -80px;
+      left: -80px;
+    }
 
-        /* Efek aura cahaya emas berdenyut di belakang kado */
-        @keyframes auraGlow {
-            0%, 100% {
-                opacity: 0.45;
-                transform: scale(0.92);
-            }
-            50% {
-                opacity: 0.85;
-                transform: scale(1.1);
-            }
-        }
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 50;
+    }
 
-        /* Efek kilau melintas pada kartu hadiah */
-        @keyframes shimmerSweep {
-            0% { transform: translateX(-140%) skewX(-20deg); }
-            55%, 100% { transform: translateX(240%) skewX(-20deg); }
-        }
+    .container {
+      width: 100%;
+      max-width: 440px;
+      position: relative;
+      z-index: 10;
+    }
 
-        /* Animasi muncul halus untuk panel pemenang */
-        @keyframes revealBounce {
-            0% {
-                opacity: 0;
-                transform: scale(0.92) translateY(14px);
-            }
-            70% {
-                opacity: 1;
-                transform: scale(1.01) translateY(-2px);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
+    .brand-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
 
-        .gift-idle {
-            animation: giftPulseFloat 2.8s ease-in-out infinite;
-        }
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, var(--emerald-primary), var(--emerald-dark));
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.28);
+    }
 
-        .gift-opening {
-            animation: giftShake 0.65s ease-in-out;
-        }
+    .brand-name {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
 
-        .aura-pulse {
-            animation: auraGlow 2.6s ease-in-out infinite;
-        }
+    .brand-name span {
+      color: var(--emerald-dark);
+    }
 
-        .shimmer-bar {
-            animation: shimmerSweep 3.4s infinite ease-in-out;
-        }
+    .card {
+      background: var(--card-bg);
+      border-radius: 28px;
+      box-shadow: var(--shadow-card);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
 
-        .reveal-card {
-            animation: revealBounce 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
+    .card-top-banner {
+      background: linear-gradient(135deg, #065f46 0%, #047857 50%, #059669 100%);
+      color: #ffffff;
+      padding: 16px 24px;
+      text-align: center;
+      position: relative;
+    }
 
-        /* Pola dekoratif titik halus di latar belakang */
-        .bg-dots {
-            background-image: radial-gradient(#F59E0B 0.75px, transparent 0.75px);
-            background-size: 24px 24px;
-            opacity: 0.14;
-        }
-    </style>
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .card-body {
+      padding: 32px 24px 36px;
+      text-align: center;
+    }
+
+    /* Tahap 1: Kotak Kado Interaktif */
+    .stage-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 0 6px;
+    }
+
+    .gift-trigger {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 12px;
+      margin: 12px 0 18px;
+      position: relative;
+      outline: none;
+    }
+
+    .gift-glow {
+      position: absolute;
+      inset: 6px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.35) 0%, rgba(245, 158, 11, 0) 70%);
+      border-radius: 50%;
+      animation: pulseGlow 2s infinite ease-in-out;
+    }
+
+    .gift-icon-wrap {
+      width: 124px;
+      height: 124px;
+      border-radius: 30px;
+      background: linear-gradient(145deg, #fffbeb, #fef3c7);
+      border: 2px solid #fde68a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 14px 30px rgba(245, 158, 11, 0.22);
+      animation: floatGift 2.6s infinite ease-in-out;
+      transition: transform 0.2s ease;
+    }
+
+    .gift-trigger:hover .gift-icon-wrap {
+      transform: scale(1.05);
+    }
+
+    .gift-trigger:active .gift-icon-wrap {
+      transform: scale(0.95);
+    }
+
+    .gift-emoji {
+      font-size: 4.2rem;
+      line-height: 1;
+      user-select: none;
+    }
+
+    .tap-title {
+      font-size: 1.38rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .tap-subtitle {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      max-width: 300px;
+      margin: 0 auto 22px;
+    }
+
+    .btn-open {
+      width: 100%;
+      padding: 15px 24px;
+      border: none;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(217, 119, 6, 0.3);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .btn-open:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(217, 119, 6, 0.36);
+    }
+
+    .btn-open:active {
+      transform: translateY(0);
+    }
+
+    /* Tahap 2: Hasil Nominal Hadiah */
+    .stage-prize {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      animation: revealPop 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .stage-prize.active {
+      display: flex;
+    }
+
+    .congrats-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--emerald-light);
+      color: var(--emerald-dark);
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+
+    .prize-headline {
+      font-size: 1.32rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
+    }
+
+    .prize-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 22px;
+    }
+
+    .prize-amount-box {
+      width: 100%;
+      background: linear-gradient(145deg, #fffbeb 0%, #fef3c7 100%);
+      border: 2px solid #f59e0b;
+      border-radius: 22px;
+      padding: 26px 18px;
+      position: relative;
+      box-shadow: 0 12px 28px rgba(245, 158, 11, 0.16);
+    }
+
+    .prize-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold-dark);
+      margin-bottom: 8px;
+    }
+
+    .prize-value {
+      font-size: 2.55rem;
+      font-weight: 800;
+      color: #92400e;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .prize-subnote {
+      margin-top: 10px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #b45309;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 0.78rem;
+      color: #64748b;
+    }
+
+    @keyframes floatGift {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      25% { transform: translateY(-6px) rotate(-2deg); }
+      75% { transform: translateY(-6px) rotate(2deg); }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(0.95); opacity: 0.55; }
+      50% { transform: scale(1.12); opacity: 0.95; }
+    }
+
+    @keyframes revealPop {
+      0% { opacity: 0; transform: scale(0.88) translateY(12px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    @media (max-width: 380px) {
+      .prize-value {
+        font-size: 2.15rem;
+      }
+      .card-body {
+        padding: 26px 18px 30px;
+      }
+    }
+  </style>
 </head>
-<body class="relative flex flex-col items-center justify-center p-4 sm:p-6 selection:bg-amber-300 selection:text-slate-900">
+<body>
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <canvas id="confetti-canvas"></canvas>
 
-    <!-- Latar Belakang Pola Halus -->
-    <div class="fixed inset-0 bg-dots pointer-events-none"></div>
+  <main class="container">
+    <header class="brand-header">
+      <div class="brand-logo" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+          <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+          <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+          <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+          <rect x="7" y="7" width="10" height="10" rx="2" />
+        </svg>
+      </div>
+      <div class="brand-name">Lucky<span>Scan</span></div>
+    </header>
 
-    <!-- Notifikasi Toast Custom (Pengganti alert) -->
-    <div id="toast-box" role="status" aria-live="polite" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 opacity-0 pointer-events-none transform -translate-y-4 w-[90%] max-w-xs">
-        <div class="bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl border border-slate-700/80 flex items-center justify-center gap-2.5 text-xs sm:text-sm font-semibold">
-            <span id="toast-icon">✅</span>
-            <span id="toast-message">Link hadiah berhasil disalin!</span>
+    <section class="card">
+      <div class="card-top-banner">
+        <span class="badge-pill">✨ Hadiah Doorprize Spesial</span>
+      </div>
+
+      <div class="card-body">
+        <!-- Tampilan Awal Sebelum Dibuka -->
+        <div id="stage-box" class="stage-box">
+          <button type="button" id="gift-trigger" class="gift-trigger" aria-label="Buka Kotak Hadiah">
+            <span class="gift-glow"></span>
+            <div class="gift-icon-wrap">
+              <span class="gift-emoji">🎁</span>
+            </div>
+          </button>
+
+          <h1 class="tap-title">Kejutan Untukmu!</h1>
+          <p class="tap-subtitle">Ketuk kotak kado di atas untuk membuka dan melihat nominal hadiah doorprize kamu.</p>
+
+          <button type="button" id="btn-open" class="btn-open">Buka Hadiah Sekarang</button>
         </div>
-    </div>
 
-    <!-- Kontainer Utama -->
-    <main class="relative z-10 w-full max-w-md mx-auto my-auto">
+        <!-- Tampilan Nominal Hadiah -->
+        <div id="stage-prize" class="stage-prize" aria-live="polite">
+          <div class="congrats-tag">🎉 Selamat, Kamu Beruntung!</div>
+          <h2 class="prize-headline">Kamu Mendapatkan Hadiah</h2>
+          <p class="prize-desc">Tunjukkan layar ini kepada panitia di lokasi acara.</p>
 
-        <!-- Header Branding LuckyScan -->
-        <header class="text-center mb-5">
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-amber-200/90 shadow-sm shadow-amber-900/5 mb-2.5">
-                <!-- Ikon QR / Scan Inline SVG -->
-                <span class="flex items-center justify-center w-6 h-6 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 text-white shadow-inner">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
-                        <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
-                        <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
-                        <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
-                        <rect x="7" y="7" width="4" height="4" rx="0.5"/>
-                        <rect x="13" y="7" width="4" height="4" rx="0.5"/>
-                        <rect x="7" y="13" width="4" height="4" rx="0.5"/>
-                        <path d="M14 14h3v3"/>
-                    </svg>
-                </span>
-                <span class="font-display font-extrabold text-xs sm:text-sm tracking-widest text-slate-900 uppercase">
-                    LUCKYSCAN
-                </span>
-                <span class="text-amber-500 text-xs">✨</span>
-            </div>
-            <h1 class="text-slate-600 text-xs sm:text-sm font-semibold">
-                Program Apresiasi &amp; Doorprize Resmi
-            </h1>
-        </header>
-
-        <!-- TAHAP 1: TAMPILAN AWAL (INTERAKTIF - BUKA KADO) -->
-        <section id="view-unopened" class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl shadow-amber-950/[0.06] border border-amber-100 text-center transition-all duration-300">
-            
-            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-bold mb-3 border border-amber-200/70">
-                <span>🎁</span> Kejutan Terverifikasi
-            </div>
-
-            <h2 class="text-2xl sm:text-[26px] font-extrabold text-slate-900 leading-tight mb-2">
-                Anda Mendapatkan Kejutan LuckyScan!
-            </h2>
-            <p class="text-slate-500 text-sm sm:text-base leading-relaxed mb-6">
-                Ketuk kotak hadiah di bawah ini untuk membuka kejutan spesial yang telah disiapkan untuk Anda.
-            </p>
-
-            <!-- Kotak Kado 3D SVG dengan Efek Kilau -->
-            <div class="relative flex items-center justify-center my-6 py-2">
-                <!-- Aura Cahaya Emas & Emerald -->
-                <div class="absolute w-44 h-44 bg-gradient-to-tr from-amber-300/70 via-yellow-200/70 to-emerald-200/60 rounded-full blur-2xl aura-pulse"></div>
-
-                <!-- Kilau Bintang Kecil -->
-                <span class="absolute top-2 left-10 text-amber-400 text-lg animate-pulse select-none">✦</span>
-                <span class="absolute bottom-4 right-10 text-emerald-500 text-base animate-pulse select-none">✦</span>
-                <span class="absolute top-6 right-12 text-amber-500 text-xs animate-bounce select-none">✨</span>
-
-                <button id="btn-open-gift" type="button" aria-label="Buka Kotak Hadiah LuckyScan" class="relative z-10 focus:outline-none cursor-pointer p-2 rounded-3xl transition-transform active:scale-95">
-                    <div id="gift-box-wrapper" class="gift-idle">
-                        <svg class="w-40 h-40 sm:w-44 sm:h-44 drop-shadow-[0_16px_22px_rgba(245,158,11,0.28)]" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Bayangan Lantai -->
-                            <ellipse cx="100" cy="182" rx="64" ry="9" fill="#92400E" fill-opacity="0.14"/>
-                            
-                            <!-- Sisi Kanan Badan Kotak (Efek 3D) -->
-                            <path d="M100 88L162 74V156L100 174V88Z" fill="url(#boxRightGrad)"/>
-                            <!-- Sisi Kiri Badan Kotak (Efek 3D) -->
-                            <path d="M38 74L100 88V174L38 156V74Z" fill="url(#boxLeftGrad)"/>
-                            
-                            <!-- Pita Sisi Kiri -->
-                            <path d="M62 79.5L76 82.6V167L62 163V79.5Z" fill="url(#ribbonGold)"/>
-                            <!-- Pita Sisi Kanan -->
-                            <path d="M124 82.6L138 79.5V163L124 167V82.6Z" fill="url(#ribbonGoldDark)"/>
-
-                            <!-- Bayangan Tutup di Badan -->
-                            <path d="M38 74L100 88L162 74V83L100 97L38 83V74Z" fill="#064E3B" fill-opacity="0.18"/>
-
-                            <!-- Tutup Kotak Sisi Kiri -->
-                            <path d="M30 55L100 68V90L30 76V55Z" fill="url(#lidLeftGrad)"/>
-                            <!-- Tutup Kotak Sisi Kanan -->
-                            <path d="M100 68L170 55V76L100 90V68Z" fill="url(#lidRightGrad)"/>
-                            <!-- Permukaan Atas Tutup -->
-                            <path d="M100 42L170 55L100 68L30 55L100 42Z" fill="#34D399"/>
-
-                            <!-- Pita pada Tutup Atas -->
-                            <path d="M58 49.8L128 62.8L142 60.2L72 47.2L58 49.8Z" fill="#FDE047"/>
-                            <path d="M142 49.8L72 62.8L58 60.2L128 47.2L142 49.8Z" fill="#FACC15"/>
-                            <!-- Pita Samping Tutup -->
-                            <path d="M58 60.2L72 62.8V84.4L58 81.6V60.2Z" fill="#F59E0B"/>
-                            <path d="M128 62.8L142 60.2V81.6L128 84.4V62.8Z" fill="#D97706"/>
-
-                            <!-- Simpul Pita Kupu-kupu 3D -->
-                            <path d="M100 54C100 54 66 22 52 38C38 54 78 56 100 54Z" fill="#FBBF24"/>
-                            <path d="M100 54C100 54 134 22 148 38C162 54 122 56 100 54Z" fill="#F59E0B"/>
-                            <ellipse cx="100" cy="53" rx="11" ry="8" fill="#FEF08A"/>
-
-                            <defs>
-                                <linearGradient id="boxLeftGrad" x1="38" y1="74" x2="100" y2="174" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#10B981"/>
-                                    <stop offset="1" stop-color="#059669"/>
-                                </linearGradient>
-                                <linearGradient id="boxRightGrad" x1="100" y1="74" x2="162" y2="174" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#059669"/>
-                                    <stop offset="1" stop-color="#047857"/>
-                                </linearGradient>
-                                <linearGradient id="lidLeftGrad" x1="30" y1="55" x2="100" y2="90" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#34D399"/>
-                                    <stop offset="1" stop-color="#10B981"/>
-                                </linearGradient>
-                                <linearGradient id="lidRightGrad" x1="100" y1="55" x2="170" y2="90" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#10B981"/>
-                                    <stop offset="1" stop-color="#059669"/>
-                                </linearGradient>
-                                <linearGradient id="ribbonGold" x1="62" y1="80" x2="76" y2="167" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#FDE047"/>
-                                    <stop offset="1" stop-color="#F59E0B"/>
-                                </linearGradient>
-                                <linearGradient id="ribbonGoldDark" x1="124" y1="80" x2="138" y2="167" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#FACC15"/>
-                                    <stop offset="1" stop-color="#D97706"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </div>
-                </button>
-            </div>
-
-            <!-- Tombol Utama Buka Hadiah -->
-            <button id="btn-trigger-text" type="button" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-500 to-yellow-500 hover:from-amber-600 hover:to-amber-500 text-slate-950 font-extrabold text-base sm:text-lg shadow-lg shadow-amber-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer flex items-center justify-center gap-2">
-                <span>Buka Hadiah Sekarang</span>
-                <span aria-hidden="true">→</span>
-            </button>
-        </section>
-
-        <!-- TAHAP 2: TAMPILAN SETELAH DIBUKA (PERAYAAN & KLAIM) -->
-        <section id="view-opened" class="hidden bg-white rounded-3xl p-6 sm:p-8 shadow-xl shadow-amber-950/[0.06] border border-amber-100 text-center reveal-card">
-            
-            <!-- Ikon Piala / Selebrasi -->
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200/80 text-4xl mb-4 shadow-sm">
-                🏆
-            </div>
-
-            <!-- Badge Pemenang Resmi LuckyScan -->
-            <div class="mb-4">
-                <span class="inline-block px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs sm:text-sm font-extrabold tracking-wide uppercase">
-                    SELAMAT! ANDA PEMENANG LUCKYSCAN
-                </span>
-            </div>
-
-            <!-- Kartu Nominal Hadiah Besar & Tegas -->
-            <div class="relative my-4 py-7 px-5 rounded-3xl bg-gradient-to-br from-amber-500 via-amber-400 to-yellow-500 text-slate-950 shadow-lg shadow-amber-500/25 overflow-hidden border border-amber-300">
-                <!-- Efek Kilau Melintas -->
-                <div class="absolute inset-y-0 w-24 bg-white/35 blur-md shimmer-bar pointer-events-none"></div>
-                
-                <p class="text-xs font-extrabold uppercase tracking-widest text-amber-950/80 mb-1.5">
-                    Hadiah Utama / Saldo E-Wallet &amp; Transfer
-                </p>
-                <div id="prize-amount-display" class="font-display text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-950 drop-shadow-sm">
-                    Rp 100.000
-                </div>
-            </div>
-
-            <!-- Instruksi Singkat Pencairan -->
-            <p class="text-slate-600 text-sm sm:text-base leading-relaxed mt-5 mb-6 px-1">
-                Hadiah Anda siap dicairkan! Silakan hubungi panitia <strong class="text-slate-900 font-bold">LuckyScan</strong> melalui tombol WhatsApp di bawah ini untuk proses pengiriman saldo.
-            </p>
-
-            <!-- Tombol Aksi Utama: Klaim via WhatsApp Panitia -->
-            <div class="space-y-3">
-                <button type="button" id="btn-wa-claim" class="w-full py-4 px-5 rounded-2xl bg-[#059669] hover:bg-[#047857] text-white font-extrabold text-sm sm:text-base shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2.5 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer">
-                    <!-- Ikon WhatsApp Inline SVG -->
-                    <svg class="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824z"/>
-                    </svg>
-                    <span>Klaim via WhatsApp Panitia</span>
-                </button>
-
-                <!-- Tombol Sekunder Kecil: Salin Link Hadiah -->
-                <button type="button" id="btn-copy-link" class="mx-auto py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-600 font-semibold text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 transition cursor-pointer">
-                    <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                    </svg>
-                    <span>Salin Link Hadiah</span>
-                </button>
-            </div>
-        </section>
-
-        <!-- Footer LuckyScan & Trigger Reset Tersembunyi -->
-        <footer class="mt-6 text-center text-slate-500 text-xs">
-            <button type="button" id="secret-reset-trigger" class="inline-block py-1 px-2 rounded-lg hover:text-slate-700 transition select-none cursor-pointer focus:outline-none">
-                &copy; <span id="year-now">2026</span> <span class="font-bold text-slate-700">LuckyScan</span> • Program Hadiah Resmi
-            </button>
-        </footer>
-    </main>
-
-    <!-- Modal Reset Developer (Muncul saat footer diklik/tap 3x) -->
-    <div id="reset-modal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-xs w-full p-6 shadow-2xl border border-slate-100 text-center">
-            <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center mx-auto mb-3 text-xl">
-                🔄
-            </div>
-            <h3 class="font-extrabold text-slate-900 text-base">Reset Status LuckyScan</h3>
-            <p class="text-xs text-slate-500 mt-1.5 mb-5 leading-relaxed">
-                Kembalikan tampilan kotak kado ke kondisi awal di browser ini untuk keperluan testing?
-            </p>
-            <div class="flex gap-2.5">
-                <button type="button" id="btn-cancel-reset" class="flex-1 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs cursor-pointer transition">
-                    Batal
-                </button>
-                <button type="button" id="btn-confirm-reset" class="flex-1 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs cursor-pointer transition">
-                    Reset Sekarang
-                </button>
-            </div>
+          <div class="prize-amount-box">
+            <div class="prize-label">Nominal Hadiah Doorprize</div>
+            <div class="prize-value">Rp 100.000</div>
+            <div class="prize-subnote">Seratus Ribu Rupiah</div>
+          </div>
         </div>
-    </div>
+      </div>
+    </section>
 
-    <script>
-        /**
-         * ============================================================================
-         * KONFIGURASI LUCKYSCAN (UBAH NOMOR WHATSAPP PANITIA DI SINI)
-         * ============================================================================
-         */
-        const LUCKYSCAN_CONFIG = {
-            brandName: "LuckyScan",
-            prizeText: "Rp 100.000",
-            // Ganti dengan nomor WhatsApp panitia (format internasional 628xxx tanpa + atau spasi)
-            adminWhatsApp: "6281234567890",
-            // Key khusus localStorage sesuai spesifikasi
-            storageBaseKey: "luckyscan_100k"
-        };
+    <footer class="footer-note">
+      Powered by <strong>LuckyScan</strong>
+    </footer>
+  </main>
 
-        /**
-         * ============================================================================
-         * INISIALISASI PARAMETER URL & PENYIMPANAN LOKAL
-         * ============================================================================
-         */
-        const urlParams = new URLSearchParams(window.location.search);
-        const rawCode = urlParams.get("kode") || urlParams.get("code") || "";
-        // Sanitasi parameter kode jika ada di URL (?kode=...)
-        const uniqueCode = rawCode.trim().replace(/[^a-zA-Z0-9-_]/g, "");
+  <script>
+    const stageBox = document.getElementById('stage-box');
+    const stagePrize = document.getElementById('stage-prize');
+    const giftTrigger = document.getElementById('gift-trigger');
+    const btnOpen = document.getElementById('btn-open');
 
-        // Pisahkan status penyimpanan berdasarkan kode unik jika tersedia, atau gunakan key dasar
-        const storageKey = uniqueCode
-            ? `${LUCKYSCAN_CONFIG.storageBaseKey}_${uniqueCode}`
-            : LUCKYSCAN_CONFIG.storageBaseKey;
+    function openPrize() {
+      stageBox.style.display = 'none';
+      stagePrize.classList.add('active');
+      launchConfetti();
+    }
 
-        // Referensi Elemen DOM
-        const viewUnopened = document.getElementById("view-unopened");
-        const viewOpened = document.getElementById("view-opened");
-        const btnOpenGift = document.getElementById("btn-open-gift");
-        const btnTriggerText = document.getElementById("btn-trigger-text");
-        const giftBoxWrapper = document.getElementById("gift-box-wrapper");
-        const btnWaClaim = document.getElementById("btn-wa-claim");
-        const btnCopyLink = document.getElementById("btn-copy-link");
+    giftTrigger.addEventListener('click', openPrize);
+    btnOpen.addEventListener('click', openPrize);
 
-        // Set tahun berjalan di footer
-        document.getElementById("year-now").textContent = new Date().getFullYear();
+    // Efek Konfeti Ringan
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let animationId = null;
 
-        /**
-         * Menampilkan notifikasi toast sementara
-         */
-        function showToast(message, icon = "✅") {
-            const toastBox = document.getElementById("toast-box");
-            document.getElementById("toast-message").textContent = message;
-            document.getElementById("toast-icon").textContent = icon;
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
 
-            toastBox.classList.remove("opacity-0", "-translate-y-4", "pointer-events-none");
-            toastBox.classList.add("opacity-100", "translate-y-0");
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
 
-            setTimeout(() => {
-                toastBox.classList.add("opacity-0", "-translate-y-4", "pointer-events-none");
-                toastBox.classList.remove("opacity-100", "translate-y-0");
-            }, 2800);
+    function launchConfetti() {
+      const colors = ['#f59e0b', '#10b981', '#3b82f6', '#ef4444', '#fbbf24', '#34d399'];
+      particles = [];
+
+      for (let i = 0; i < 95; i++) {
+        particles.push({
+          x: canvas.width / 2 + (Math.random() - 0.5) * 140,
+          y: canvas.height * 0.42,
+          vx: (Math.random() - 0.5) * 14,
+          vy: (Math.random() - 0.85) * 15,
+          size: Math.random() * 7 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          vRot: (Math.random() - 0.5) * 12,
+          alpha: 1
+        });
+      }
+
+      if (animationId) cancelAnimationFrame(animationId);
+      animateConfetti();
+    }
+
+    function animateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let activeCount = 0;
+
+      for (const p of particles) {
+        if (p.alpha <= 0) continue;
+        activeCount++;
+
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.38;
+        p.vx *= 0.985;
+        p.rotation += p.vRot;
+
+        if (p.y > canvas.height * 0.82) {
+          p.alpha -= 0.025;
         }
 
-        /**
-         * Efek ledakan konfeti emas & hijau emerald
-         */
-        function triggerConfetti() {
-            if (typeof confetti !== "function") return;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+        ctx.restore();
+      }
 
-            const colors = ["#F59E0B", "#FBBF24", "#059669", "#10B981", "#FDE047"];
-
-            // Ledakan tengah awal
-            confetti({
-                particleCount: 70,
-                spread: 75,
-                origin: { y: 0.6 },
-                colors: colors
-            });
-
-            // Hujan konfeti dari sisi kiri & kanan
-            const duration = 1800;
-            const end = Date.now() + duration;
-
-            (function frame() {
-                confetti({
-                    particleCount: 4,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0, y: 0.65 },
-                    colors: colors
-                });
-                confetti({
-                    particleCount: 4,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1, y: 0.65 },
-                    colors: colors
-                });
-
-                if (Date.now() < end) {
-                    requestAnimationFrame(frame);
-                }
-            }());
-        }
-
-        /**
-         * Menampilkan tampilan pemenang (Tahap 2)
-         */
-        function showOpenedState() {
-            viewUnopened.classList.add("hidden");
-            viewOpened.classList.remove("hidden");
-        }
-
-        /**
-         * Handler saat pengguna membuka kotak kado
-         */
-        function handleOpenGift() {
-            btnOpenGift.disabled = true;
-            btnTriggerText.disabled = true;
-
-            giftBoxWrapper.classList.remove("gift-idle");
-            giftBoxWrapper.classList.add("gift-opening");
-            btnTriggerText.innerHTML = "<span>Membuka Hadiah...</span>";
-
-            setTimeout(() => {
-                try {
-                    localStorage.setItem(storageKey, JSON.stringify({
-                        opened: true,
-                        brand: LUCKYSCAN_CONFIG.brandName,
-                        prize: LUCKYSCAN_CONFIG.prizeText,
-                        code: uniqueCode || null,
-                        timestamp: new Date().toISOString()
-                    }));
-                } catch (err) {
-                    console.warn("Penyimpanan lokal tidak tersedia:", err);
-                }
-
-                showOpenedState();
-                triggerConfetti();
-            }, 650);
-        }
-
-        /**
-         * Cek apakah hadiah sudah pernah dibuka di perangkat ini
-         */
-        function checkClaimStatus() {
-            try {
-                const saved = localStorage.getItem(storageKey);
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    if (parsed && parsed.opened) {
-                        showOpenedState();
-                    }
-                }
-            } catch (err) {
-                console.warn("Gagal membaca status klaim:", err);
-            }
-        }
-
-        /**
-         * Event Listeners Interaksi Utama
-         */
-        btnOpenGift.addEventListener("click", handleOpenGift);
-        btnTriggerText.addEventListener("click", handleOpenGift);
-
-        // Tombol Klaim via WhatsApp Panitia
-        btnWaClaim.addEventListener("click", () => {
-            const codeLine = uniqueCode ? `\nKode Voucher: *${uniqueCode}*` : "";
-            const message =
-`Halo Panitia *${LUCKYSCAN_CONFIG.brandName}*,
-Saya pemenang hadiah doorprize *${LUCKYSCAN_CONFIG.brandName}* sebesar *${LUCKYSCAN_CONFIG.prizeText}*.${codeLine}
-
-Mohon informasi proses pencairan hadiahnya. Terima kasih! 🙏`;
-
-            const waUrl = `https://wa.me/${LUCKYSCAN_CONFIG.adminWhatsApp}?text=${encodeURIComponent(message)}`;
-            showToast("Membuka WhatsApp Panitia...", "📲");
-
-            setTimeout(() => {
-                window.open(waUrl, "_blank", "noopener,noreferrer");
-            }, 300);
-        });
-
-        // Tombol Salin Link Hadiah
-        btnCopyLink.addEventListener("click", () => {
-            const currentUrl = window.location.href;
-            const tempInput = document.createElement("input");
-            tempInput.value = currentUrl;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            tempInput.setSelectionRange(0, 99999);
-
-            try {
-                document.execCommand("copy");
-                showToast("Link hadiah berhasil disalin!", "✅");
-            } catch (err) {
-                showToast("Gagal menyalin link.", "⚠️");
-            }
-
-            document.body.removeChild(tempInput);
-        });
-
-        /**
-         * Fitur Reset Tersembunyi untuk Testing Developer (Klik/Tap 3x pada footer)
-         */
-        let tapCount = 0;
-        let tapTimer = null;
-        const secretTrigger = document.getElementById("secret-reset-trigger");
-        const resetModal = document.getElementById("reset-modal");
-
-        secretTrigger.addEventListener("click", () => {
-            tapCount++;
-            clearTimeout(tapTimer);
-            tapTimer = setTimeout(() => {
-                tapCount = 0;
-            }, 900);
-
-            if (tapCount >= 3) {
-                tapCount = 0;
-                resetModal.classList.remove("hidden");
-            }
-        });
-
-        document.getElementById("btn-cancel-reset").addEventListener("click", () => {
-            resetModal.classList.add("hidden");
-        });
-
-        document.getElementById("btn-confirm-reset").addEventListener("click", () => {
-            try {
-                localStorage.removeItem(storageKey);
-                localStorage.removeItem(LUCKYSCAN_CONFIG.storageBaseKey);
-            } catch (err) {
-                console.warn(err);
-            }
-            window.location.reload();
-        });
-
-        // Jalankan pengecekan status saat halaman siap
-        window.addEventListener("DOMContentLoaded", checkClaimStatus);
-    </script>
+      if (activeCount > 0) {
+        animationId = requestAnimationFrame(animateConfetti);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+  </script>
 </body>
 </html>
