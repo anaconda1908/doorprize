@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>LuckyScan - GRAND PRIZE SMARTPHONE!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-dark-1: #060919;
+      --bg-dark-2: #0f172a;
+      --bg-dark-3: #1e1b4b;
+      --gold-bright: #fde047;
+      --gold-main: #f59e0b;
+      --gold-deep: #b45309;
+      --emerald-glow: #10b981;
+      --text-light: #f8fafc;
+      --text-muted: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at 50% 25%, #1e1b4b 0%, #090d24 55%, #03050f 100%);
+      color: var(--text-light);
+      overflow-x: hidden;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      padding: 20px 18px 24px;
+    }
+
+    /* Efek Sorotan Lampu Panggung & Sinar Berputar */
+    .stage-lights {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .sunburst {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 180vmax;
+      height: 180vmax;
+      transform: translate(-50%, -50%);
+      background: repeating-conic-gradient(
+        from 0deg,
+        rgba(250, 204, 21, 0.06) 0deg 10deg,
+        transparent 10deg 20deg
+      );
+      animation: spinRays 24s linear infinite;
+      opacity: 0.45;
+      transition: opacity 0.6s ease;
+    }
+
+    body.prize-unlocked .sunburst {
+      opacity: 1;
+      animation-duration: 14s;
+    }
+
+    .glow-spot-top {
+      position: absolute;
+      top: -15%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90vw;
+      height: 55vh;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.28) 0%, rgba(16, 185, 129, 0.12) 45%, transparent 72%);
+      filter: blur(40px);
+    }
+
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 60;
+    }
+
+    /* Header LuckyScan */
+    .brand-header {
+      width: 100%;
+      max-width: 520px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      z-index: 10;
+      padding-top: 4px;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #fbbf24, #d97706);
+      color: #090d24;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 24px rgba(251, 191, 36, 0.5);
+    }
+
+    .brand-name {
+      font-size: 1.35rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .brand-name span {
+      color: #fde047;
+    }
+
+    /* Area Utama Full Layar */
+    .main-stage {
+      width: 100%;
+      max-width: 520px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      z-index: 10;
+      padding: 16px 0;
+    }
+
+    .grand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(90deg, rgba(245, 158, 11, 0.25), rgba(253, 224, 71, 0.35), rgba(245, 158, 11, 0.25));
+      border: 1.5px solid rgba(253, 224, 71, 0.7);
+      color: #fef08a;
+      padding: 8px 20px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.35);
+      margin-bottom: 22px;
+    }
+
+    /* Tahap 1: Kotak Misteri Grand Prize */
+    .stage-box {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .gift-trigger {
+      background: none;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      padding: 18px;
+      margin-bottom: 22px;
+      outline: none;
+    }
+
+    .gift-halo {
+      position: absolute;
+      inset: -10px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(253, 224, 71, 0.55) 0%, rgba(245, 158, 11, 0.15) 55%, transparent 75%);
+      animation: haloPulse 1.8s infinite ease-in-out;
+    }
+
+    .gift-orb {
+      width: 170px;
+      height: 170px;
+      border-radius: 42px;
+      background: linear-gradient(145deg, #fef08a 0%, #f59e0b 50%, #b45309 100%);
+      padding: 4px;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 20px 55px rgba(245, 158, 11, 0.55), 0 0 0 8px rgba(253, 224, 71, 0.14);
+      animation: hypeShake 2.2s infinite ease-in-out;
+      transition: transform 0.2s ease;
+    }
+
+    .gift-trigger:hover .gift-orb {
+      transform: scale(1.07);
+    }
+
+    .gift-trigger:active .gift-orb {
+      transform: scale(0.94);
+    }
+
+    .gift-orb-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 38px;
+      background: radial-gradient(circle at 30% 30%, #1e1b4b, #090d24);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gift-emoji {
+      font-size: 5.5rem;
+      line-height: 1;
+      filter: drop-shadow(0 8px 18px rgba(253, 224, 71, 0.45));
+      user-select: none;
+    }
+
+    .tap-title {
+      font-size: clamp(1.75rem, 6vw, 2.3rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      background: linear-gradient(to right, #ffffff, #fde047, #ffffff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 10px;
+    }
+
+    .tap-subtitle {
+      font-size: 1rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      max-width: 340px;
+      margin-bottom: 28px;
+    }
+
+    .btn-open {
+      width: 100%;
+      max-width: 380px;
+      padding: 18px 28px;
+      border: none;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #fde047 0%, #f59e0b 55%, #d97706 100%);
+      color: #090d24;
+      font-family: inherit;
+      font-size: 1.12rem;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 14px 36px rgba(245, 158, 11, 0.5), inset 0 2px 0 rgba(255, 255, 255, 0.65);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .btn-open:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 18px 44px rgba(253, 224, 71, 0.65);
+    }
+
+    .btn-open:active {
+      transform: scale(0.98);
+    }
+
+    /* Tahap 2: Layar Kemenangan Grand Prize Smartphone */
+    .stage-prize {
+      width: 100%;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      animation: grandReveal 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .stage-prize.active {
+      display: flex;
+    }
+
+    .jackpot-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #ffffff;
+      font-size: 0.9rem;
+      font-weight: 800;
+      padding: 8px 20px;
+      border-radius: 999px;
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.45);
+      margin-bottom: 16px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .prize-headline {
+      font-size: clamp(1.55rem, 5.5vw, 2.05rem);
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+
+    .prize-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 22px;
+    }
+
+    .smartphone-showcase {
+      width: 100%;
+      background: linear-gradient(155deg, rgba(253, 224, 71, 0.18) 0%, rgba(245, 158, 11, 0.12) 50%, rgba(15, 23, 42, 0.85) 100%);
+      border: 2.5px solid #fde047;
+      border-radius: 30px;
+      padding: 30px 20px 28px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(245, 158, 11, 0.38), inset 0 0 32px rgba(253, 224, 71, 0.18);
+    }
+
+    /* Efek Kilau Shimmer Melintas */
+    .smartphone-showcase::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -120%;
+      width: 70%;
+      height: 100%;
+      background: linear-gradient(
+        110deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.25) 50%,
+        transparent 100%
+      );
+      animation: shimmerSweep 2.8s infinite ease-in-out;
+      pointer-events: none;
+    }
+
+    .phone-hero-wrap {
+      position: relative;
+      width: 112px;
+      height: 112px;
+      margin: 0 auto 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .phone-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px dashed rgba(253, 224, 71, 0.75);
+      animation: spinRays 10s linear infinite;
+    }
+
+    .phone-emoji {
+      font-size: 4.5rem;
+      line-height: 1;
+      filter: drop-shadow(0 10px 22px rgba(253, 224, 71, 0.6));
+      animation: floatPhone 2.4s infinite ease-in-out;
+    }
+
+    .prize-label {
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #fde047;
+      margin-bottom: 6px;
+    }
+
+    .prize-value {
+      font-size: clamp(2.35rem, 9vw, 3.25rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      background: linear-gradient(180deg, #ffffff 15%, #fde047 65%, #f59e0b 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 4px 16px rgba(245, 158, 11, 0.45));
+    }
+
+    .prize-subnote {
+      margin-top: 10px;
+      display: inline-block;
+      background: rgba(253, 224, 71, 0.16);
+      border: 1px solid rgba(253, 224, 71, 0.45);
+      color: #fef08a;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 999px;
+    }
+
+    .btn-reset {
+      margin-top: 22px;
+      padding: 11px 22px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #e2e8f0;
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 0.2s ease;
+    }
+
+    .btn-reset:hover {
+      background: rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+    }
+
+    .footer-note {
+      z-index: 10;
+      text-align: center;
+      font-size: 0.8rem;
+      color: rgba(203, 213, 225, 0.7);
+      padding-top: 8px;
+    }
+
+    .footer-note strong {
+      color: #fde047;
+    }
+
+    @keyframes spinRays {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    .phone-ring {
+      animation: spinSimple 10s linear infinite;
+    }
+
+    @keyframes spinSimple {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes haloPulse {
+      0%, 100% { transform: scale(0.92); opacity: 0.65; }
+      50% { transform: scale(1.18); opacity: 1; }
+    }
+
+    @keyframes hypeShake {
+      0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+      15% { transform: translateY(-8px) rotate(-4deg) scale(1.03); }
+      30% { transform: translateY(-8px) rotate(4deg) scale(1.03); }
+      45% { transform: translateY(-4px) rotate(-2deg) scale(1.01); }
+      60% { transform: translateY(0) rotate(0deg) scale(1); }
+    }
+
+    @keyframes floatPhone {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-7px) scale(1.06); }
+    }
+
+    @keyframes grandReveal {
+      0% { opacity: 0; transform: scale(0.75) translateY(20px); }
+      65% { opacity: 1; transform: scale(1.04) translateY(-4px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    @keyframes shimmerSweep {
+      0% { left: -120%; }
+      55%, 100% { left: 160%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage-lights" aria-hidden="true">
+    <div class="sunburst"></div>
+    <div class="glow-spot-top"></div>
+  </div>
+  <canvas id="confetti-canvas"></canvas>
+
+  <header class="brand-header">
+    <div class="brand-logo" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+        <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+        <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+        <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+        <rect x="7" y="7" width="10" height="10" rx="2" />
+      </svg>
+    </div>
+    <div class="brand-name">Lucky<span>Scan</span></div>
+  </header>
+
+  <main class="main-stage">
+    <div class="grand-badge">👑 Grand Prize Utama</div>
+
+    <!-- Tahap 1: Kotak Misteri -->
+    <div id="stage-box" class="stage-box">
+      <button type="button" id="gift-trigger" class="gift-trigger" aria-label="Buka Grand Prize">
+        <span class="gift-halo"></span>
+        <div class="gift-orb">
+          <div class="gift-orb-inner">
+            <span class="gift-emoji">🎁</span>
+          </div>
+        </div>
+      </button>
+
+      <h1 class="tap-title">Kejutan Hadiah Utama!</h1>
+      <p class="tap-subtitle">Ketuk kotak emas di atas sekarang untuk membuka hadiah spesial kamu.</p>
+
+      <button type="button" id="btn-open" class="btn-open">🎉 Buka Hadiah Utama</button>
+    </div>
+
+    <!-- Tahap 2: Pengumuman Smartphone -->
+    <div id="stage-prize" class="stage-prize" aria-live="polite">
+      <div class="jackpot-pill">🔥 Jackpot! Selamat Pemenang!</div>
+      <h2 class="prize-headline">Kamu Memenangkan Hadiah Utama</h2>
+      <p class="prize-desc">Tunjukkan layar kemenangan ini kepada panitia di lokasi acara.</p>
+
+      <div class="smartphone-showcase">
+        <div class="phone-hero-wrap">
+          <div class="phone-ring"></div>
+          <span class="phone-emoji">📱</span>
+        </div>
+
+        <div class="prize-label">✨ Grand Prize Doorprize ✨</div>
+        <div class="prize-value">1 UNIT SMARTPHONE</div>
+        <div class="prize-subnote">Hadiah Utama LuckyScan</div>
+      </div>
+
+      <button type="button" id="btn-reset" class="btn-reset">↻ Ulangi / Test Lagi</button>
+    </div>
+  </main>
+
+  <footer class="footer-note">
+    Powered by <strong>LuckyScan</strong>
+  </footer>
+
+  <script>
+    const stageBox = document.getElementById('stage-box');
+    const stagePrize = document.getElementById('stage-prize');
+    const giftTrigger = document.getElementById('gift-trigger');
+    const btnOpen = document.getElementById('btn-open');
+    const btnReset = document.getElementById('btn-reset');
+
+    try { localStorage.clear(); } catch (e) {}
+
+    function openPrize() {
+      document.body.classList.add('prize-unlocked');
+      stageBox.style.display = 'none';
+      stagePrize.classList.add('active');
+
+      // Ledakan konfeti bertahap supaya ekstra heboh
+      launchMegaConfetti(140, 0.45);
+      setTimeout(() => launchMegaConfetti(90, 0.25), 350);
+      setTimeout(() => launchMegaConfetti(90, 0.75), 650);
+    }
+
+    function resetPrize() {
+      document.body.classList.remove('prize-unlocked');
+      stagePrize.classList.remove('active');
+      stageBox.style.display = 'flex';
+      particles = [];
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    giftTrigger.addEventListener('click', openPrize);
+    btnOpen.addEventListener('click', openPrize);
+    btnReset.addEventListener('click', resetPrize);
+
+    // Efek Mega Konfeti + Bintang Emas
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let animationId = null;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function launchMegaConfetti(count, originXRatio) {
+      const colors = ['#fde047', '#f59e0b', '#10b981', '#38bdf8', '#f43f5e', '#ffffff', '#a855f7'];
+
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: canvas.width * originXRatio + (Math.random() - 0.5) * 120,
+          y: canvas.height * 0.45,
+          vx: (Math.random() - 0.5) * 20,
+          vy: (Math.random() - 0.88) * 20,
+          size: Math.random() * 9 + 5,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          vRot: (Math.random() - 0.5) * 16,
+          isCircle: Math.random() > 0.7,
+          alpha: 1
+        });
+      }
+
+      if (!animationId) {
+        animateConfetti();
+      }
+    }
+
+    function animateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let activeCount = 0;
+
+      for (const p of particles) {
+        if (p.alpha <= 0) continue;
+        activeCount++;
+
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.36;
+        p.vx *= 0.985;
+        p.rotation += p.vRot;
+
+        if (p.y > canvas.height * 0.84) {
+          p.alpha -= 0.022;
+        }
+
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rotation * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+
+        if (p.isCircle) {
+          ctx.beginPath();
+          ctx.arc(0, 0, p.size * 0.45, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.58);
+        }
+        ctx.restore();
+      }
+
+      if (activeCount > 0) {
+        animationId = requestAnimationFrame(animateConfetti);
+      } else {
+        animationId = null;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+  </script>
+</body>
+</html>
